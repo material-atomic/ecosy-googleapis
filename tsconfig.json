@@ -13,10 +13,7 @@
     "isolatedModules": true,
     "resolveJsonModule": true,
     "outDir": "dist",
-    "rootDir": "src",
-    "paths": {
-      "@ecosy/core/*": ["../ecosy-core/src/*"]
-    }
+    "rootDir": "src"
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]

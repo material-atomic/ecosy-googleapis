@@ -14,7 +14,7 @@ const input = inputFiles.reduce((acc, file) => {
   return acc;
 }, {});
 
-const external = ["@ecosy/core/http"];
+const external = [/^@ecosy\/core(\/.*)?$/];
 
 const minifyOptions = {
   compress: {
