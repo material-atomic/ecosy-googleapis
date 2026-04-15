@@ -36,7 +36,6 @@ initDriveAuth({
   email: SERVICE_ACCOUNT_EMAIL,
   privateKey: PRIVATE_KEY_PEM,
   scope: "https://www.googleapis.com/auth/drive",
-  tokenCache: env.KV, // optional KVNamespace — cross-invocation cache
 });
 
 // 2. Use the Drive API.
@@ -64,15 +63,14 @@ await deleteFile(fileId);
 ### Auth
 
 - **`initDriveAuth(config)`** — install the OAuth2 interceptor on `driveHttp` and `uploadHttp`. Idempotent.
-- **`createAuthInterceptor(config)`** — returns an `HttpInterceptorRequest` that injects `Authorization: Bearer <token>`. Tokens are cached in-memory (and optionally in a `KVNamespace`) with a 5-minute safety margin.
+- **`createAuthInterceptor(config)`** — returns an `HttpInterceptorRequest` that injects `Authorization: Bearer <token>`. Tokens are cached in-memory with a 5-minute safety margin. Persistent caching (Redis, KV, disk, …) is an app-level concern and is not handled by this library.
 - **`invalidateTokenCache()`** — clear the in-memory token cache (e.g. after a 401).
 
 ```ts
 interface GoogleAuthConfig {
-  email: string;            // service-account client_email
-  privateKey: string;       // service-account private_key (PEM)
-  scope: string;            // OAuth scopes, space-separated
-  tokenCache?: KVNamespace; // optional Workers KV for cross-invocation cache
+  email: string;      // service-account client_email
+  privateKey: string; // service-account private_key (PEM)
+  scope: string;      // OAuth scopes, space-separated
 }
 ```
 

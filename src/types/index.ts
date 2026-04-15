@@ -4,7 +4,6 @@ export interface GoogleAuthConfig {
   email: string;
   privateKey: string;
   scope: string;
-  tokenCache?: KVNamespace;
 }
 
 export interface CachedToken {

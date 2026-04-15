@@ -13,17 +13,6 @@ async function getAccessToken(config: GoogleAuthConfig): Promise<string> {
     return tokenCache.accessToken;
   }
 
-  if (config.tokenCache) {
-    const cached = await config.tokenCache.get("google_access_token");
-    if (cached) {
-      const parsed = JSON.parse(cached) as CachedToken;
-      if (parsed.expiresAt > now + TOKEN_MARGIN) {
-        tokenCache = parsed;
-        return parsed.accessToken;
-      }
-    }
-  }
-
   const jwt = await createSignedJWT(config.email, config.privateKey, config.scope);
 
   const response = await fetch("https://oauth2.googleapis.com/token", {
@@ -43,20 +32,10 @@ async function getAccessToken(config: GoogleAuthConfig): Promise<string> {
     token_type: string;
   };
 
-  const newToken: CachedToken = {
+  tokenCache = {
     accessToken: data.access_token,
     expiresAt: now + data.expires_in * 1000,
   };
-
-  tokenCache = newToken;
-
-  if (config.tokenCache) {
-    await config.tokenCache.put(
-      "google_access_token",
-      JSON.stringify(newToken),
-      { expirationTtl: data.expires_in }
-    );
-  }
 
   return data.access_token;
 }
